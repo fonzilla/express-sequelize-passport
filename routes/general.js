@@ -13,7 +13,7 @@ function authRequired(req, res, next) {
   }
 }
 
-router.get('/home', authRequired, (req, res) => {
+router.get('/home', (req, res) => {
   res.render('home')
   // console.log('the user?', req.user);
   // res.render('home', {

@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const models = require('../models');
 const passport = require('passport');
 
 router.get('/login', (req, res) => {
@@ -18,11 +19,26 @@ router.get('/login', (req, res) => {
    res.render('login');
 });
 
-router.post('/login', passport.authenticate('local', {
-  successRedirect: '/home',
-  failureRedirect: '/login',
-  failureFlash: true
-}));
+router.post('/login', (req, res) => {
+  models.User.find({
+    where: {
+      username: req.body.username
+    }
+  })
+  .then(user => {
+    if(user.auth(req.body.password)){
+      console.log('successful login');
+      res.redirect('/home');
+    } else {
+      console.log('password wrong');
+      res.redirect('/login')
+    }
+  })
+  .catch(err => {
+    console.log('problem logging in');
+    res.redirect('/login')
+  })
+});
 
 router.get('/register', (req, res) => {
 
